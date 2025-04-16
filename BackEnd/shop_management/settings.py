@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'customers',
     'expenses',
     'accounts',
+    'analytics',
     'loansAnddebts',
     'suppliers',
     'corsheaders',

@@ -26,5 +26,6 @@ urlpatterns = [
     path('api/expenses/', include('expenses.urls')),
     path('api/loans/', include('loansAnddebts.urls')),
     path('api/suppliers/', include('suppliers.urls')),
+    path('api/dashboard/', include('analytics.urls')),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
