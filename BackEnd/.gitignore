@@ -1,0 +1,81 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.env
+*.venv
+*.log
+*.pot
+*.mo
+
+# Django
+*.sqlite3
+db.sqlite3
+*.log
+*.bak
+*.swp
+
+# Environment & Secrets
+.env
+.env.*
+*.secret
+secrets.json
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv/
+.Python
+pip-log.txt
+shop/
+
+# VSCode / JetBrains
+.vscode/
+.idea/
+
+# Mac & OS
+.DS_Store
+Thumbs.db
+
+# Bytecode / Caches
+*.pyc
+__pycache__/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Static & Media Files
+/staticfiles/
+/static/
+/media/
+/mediafiles/
+
+# Migrations (optional)
+**/migrations/*.pyc
+**/migrations/*.pyo
+**/migrations/__pycache__/
+/migrations/
+
+# Postman / Testing / Reports
+*.postman_collection.json
+*.postman_environment.json
+
+# Node modules (if using npm/yarn for frontend)
+node_modules/
+
+# Coverage reports
+coverage.xml
+*.cover
+*.coverage
+coverage/
+
+# Logs
+*.log
+
+# Database Dumps
+*.sql
+*.dump
