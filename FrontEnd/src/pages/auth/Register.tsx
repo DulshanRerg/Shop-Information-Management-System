@@ -23,8 +23,8 @@ const registerSchema = z.object({
   username: z.string().min(3, 'Username must be at least 3 characters'),
   email: z.string().email('Please enter a valid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
-  password_confirmation: z.string().min(6, 'Password confirmation must be at least 6 characters'),
-}).refine((data) => data.password === data.password_confirmation, {
+  password2: z.string().min(6, 'Password confirmation must be at least 6 characters'),
+}).refine((data) => data.password === data.password2, {
   message: "Passwords don't match",
   path: ["password_confirmation"],
 });
@@ -42,14 +42,14 @@ export default function Register() {
       username: '',
       email: '',
       password: '',
-      password_confirmation: '',
+      password2: '',
     },
   });
 
   const onSubmit = async (data: RegisterFormValues) => {
       try {
-        const { username, email, password, password_confirmation } = data;
-        await register({ username, email, password, password_confirmation });
+        const { username, email, password, password2 } = data;
+        await register({ username, email, password, password2 });
       } catch (error) {
         // Error is handled in the auth hook
         console.error('Registration error:', error);
@@ -128,7 +128,7 @@ export default function Register() {
               />
               <FormField
                 control={form.control}
-                name="password_confirmation"
+                name="password2"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Confirm Password</FormLabel>
