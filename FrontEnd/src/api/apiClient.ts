@@ -25,10 +25,30 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    // Handle authentication errors (401)
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      window.location.href = '/login';
+      const refreshToken = localStorage.getItem('refresh_token');
+      if (refreshToken) {
+        try {
+          const response = await apiClient.post('/accounts/refresh/', { refresh: refreshToken });
+          const newAccessToken = response.data.access;
+
+          // Update the token in localStorage
+          localStorage.setItem('token', newAccessToken);
+
+          // Retry the original request with the new token
+          error.config.headers.Authorization = `Bearer ${newAccessToken}`;
+          return apiClient.request(error.config);
+        } catch (refreshError) {
+          console.error('Token refresh failed:', refreshError.response?.data);
+          localStorage.removeItem('token');
+          localStorage.removeItem('refresh_token');
+          window.location.href = '/login'; // Redirect to login
+        }
+      } else {
+        // No refresh token available, redirect to login
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

@@ -1,4 +1,3 @@
-
 import apiClient from './apiClient';
 import { User } from '../types/models';
 import { toast } from '@/hooks/use-toast';
@@ -60,10 +59,10 @@ const authService = {
   login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
     try {
       const response = await apiClient.post('/accounts/login/', credentials);
-      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('token', response.data.access); // Store access token
+      localStorage.setItem('refresh_token', response.data.refresh); // Store refresh token
       return response.data;
     } catch (error: any) {
-      // For network errors in development, simulate successful login
       if (handleNetworkError(error, 'Login')) {
         const mockUser: User = {
           id: 1,
@@ -72,16 +71,16 @@ const authService = {
           is_active: true,
           is_staff: false,
         };
-        
+
         const mockResponse: LoginResponse = {
           token: 'dev-token-' + Date.now(),
           user: mockUser
         };
-        
+
         localStorage.setItem('token', mockResponse.token);
         return mockResponse;
       }
-      
+
       throw error;
     }
   },

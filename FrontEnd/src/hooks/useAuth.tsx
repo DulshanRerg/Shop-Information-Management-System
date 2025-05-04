@@ -1,4 +1,3 @@
-
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
@@ -74,7 +73,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // Check authentication status on mount
   useEffect(() => {
     const checkAuth = async () => {
-      if (authService.isAuthenticated()) {
+      const token = localStorage.getItem('token');
+      if (token) {
         try {
           await queryClient.fetchQuery({
             queryKey: ['currentUser'],
@@ -83,11 +83,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setIsAuthenticated(true);
         } catch (error) {
           localStorage.removeItem('token');
+          localStorage.removeItem('refresh_token');
           setIsAuthenticated(false);
         }
       }
     };
-    
+
     checkAuth();
   }, [queryClient]);
 

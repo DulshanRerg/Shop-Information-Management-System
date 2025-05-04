@@ -1,4 +1,3 @@
-
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -20,7 +19,10 @@ export const ProtectedRoute = () => {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    const token = localStorage.getItem('token');
+    if (!token) {
+      return <Navigate to="/login" state={{ from: location }} replace />;
+    }
   }
 
   return <Outlet />;
