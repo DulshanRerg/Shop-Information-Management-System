@@ -86,7 +86,6 @@ const Inventory = () => {
     setCurrentProduct({
       id: product.id,
       name: product.name,
-      category: product.category,
       price: product.price,
       stock: product.stock,
       description: product.description,
