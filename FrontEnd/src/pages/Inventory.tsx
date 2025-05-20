@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Layout from '@/components/Layout';
 import { toast } from "sonner";
@@ -34,16 +33,16 @@ const Inventory = () => {
   const filteredData = inventoryData.filter((product) => {
     // Search filter
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          product.category.toLowerCase().includes(searchQuery.toLowerCase());
-    
+      (product.category && typeof product.category === 'object' && (product.category as any).name && (product.category as any).name.toLowerCase().includes(searchQuery.toLowerCase()));
+
     // Category filter
-    const matchesCategory = categoryFilter === "all" || 
-                           product.category.toLowerCase() === categoryFilter.toLowerCase();
-    
+    const matchesCategory = categoryFilter === "all" ||
+      (product.category && typeof product.category === 'object' && (product.category as any).name && (product.category as any).name.toLowerCase() === categoryFilter.toLowerCase());
+
     // Status filter
-    const matchesStatus = statusFilter === "all" || 
-                         product.status.toLowerCase().replace(/\s+/g, '-') === statusFilter;
-    
+    const matchesStatus = statusFilter === "all" ||
+      product.status.toLowerCase().replace(/\s+/g, '-') === statusFilter;
+
     return matchesSearch && matchesCategory && matchesStatus;
   });
 
@@ -52,8 +51,9 @@ const Inventory = () => {
     createProduct.mutate({
       name: values.name,
       category: values.category,
-      price: values.price,
-      stock: values.stock,
+      cost_price: values.cost_price,
+      selling_price: values.selling_price,
+      quantity_in_stock: values.stock,
       description: values.description || "",
     });
     setIsAddDialogOpen(false);
@@ -62,14 +62,14 @@ const Inventory = () => {
   // Edit a product
   const handleEditProduct = (values: ProductFormValues) => {
     if (!currentProduct?.id) return;
-    
     updateProduct.mutate({
       id: currentProduct.id,
       data: {
         name: values.name,
         category: values.category,
-        price: values.price,
-        stock: values.stock,
+        cost_price: values.cost_price,
+        selling_price: values.selling_price,
+        quantity_in_stock: values.stock,
         description: values.description || "",
       }
     });
@@ -86,8 +86,9 @@ const Inventory = () => {
     setCurrentProduct({
       id: product.id,
       name: product.name,
-      price: product.price,
-      stock: product.stock,
+      cost_price: product.cost_price,
+      selling_price: product.selling_price,
+      stock: product.quantity_in_stock,
       description: product.description,
     });
     setIsEditDialogOpen(true);
@@ -108,7 +109,12 @@ const Inventory = () => {
         />
         
         <ProductList 
-          products={filteredData}
+          products={filteredData.map(product => ({
+            ...product,
+            category: typeof product.category === 'string'
+              ? { id: 0, name: product.category }
+              : product.category
+          }))}
           onEditProduct={openEditDialog}
           onDeleteProduct={handleDeleteProduct}
           isLoading={isLoading}

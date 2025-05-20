@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
@@ -94,9 +93,17 @@ const ProductList: React.FC<ProductListProps> = ({
             products.map((product) => (
               <TableRow key={product.id}>
                 <TableCell className="font-medium">{product.name}</TableCell>
-                <TableCell>{product.category}</TableCell>
-                <TableCell>${product.price.toFixed(2)}</TableCell>
-                <TableCell>{product.stock}</TableCell>
+                <TableCell>{
+                  typeof product.category === 'object' && product.category !== null && 'name' in product.category
+                    ? String(product.category.name)
+                    : String(product.category)
+                }</TableCell>
+                <TableCell>${
+                  (typeof product.selling_price === 'number' ? product.selling_price : 0).toFixed(2)
+                }</TableCell>
+                <TableCell>{
+                  typeof product.quantity_in_stock === 'number' ? product.quantity_in_stock : ''
+                }</TableCell>
                 <TableCell>{getStatusBadge(product.status)}</TableCell>
                 <TableCell className="text-right">
                   <DropdownMenu>

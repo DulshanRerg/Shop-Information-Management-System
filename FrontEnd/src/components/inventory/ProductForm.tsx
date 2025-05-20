@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -22,22 +21,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-
-// Categories to choose from
-const productCategories = [
-  "Furniture",
-  "Electronics",
-  "Office Supplies",
-  "Stationery",
-  "Other"
-];
+import { useQuery } from '@tanstack/react-query';
+import categoryService from '@/api/categoryService';
 
 // Product validation schema
 const productSchema = z.object({
   id: z.number().optional(),
   name: z.string().min(3, { message: "Name must be at least 3 characters" }),
   category: z.string().min(1, { message: "Please select a category" }),
-  price: z.coerce.number().positive({ message: "Price must be a positive number" }),
+  cost_price: z.coerce.number().positive({ message: "Cost price must be a positive number" }),
+  selling_price: z.coerce.number().positive({ message: "Selling price must be a positive number" }),
   stock: z.coerce.number().int().nonnegative({ message: "Stock must be a non-negative integer" }),
   description: z.string().optional(),
 });
@@ -51,10 +44,17 @@ interface ProductFormProps {
 }
 
 const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit, onCancel }) => {
+  // Fetch categories from backend
+  const { data: categories = [] } = useQuery({
+    queryKey: ['categories'],
+    queryFn: categoryService.getCategories,
+  });
+
   const defaultValues: ProductFormValues = initialValues || {
     name: "",
     category: "",
-    price: 0,
+    cost_price: 0,
+    selling_price: 0,
     stock: 0,
     description: "",
   };
@@ -101,9 +101,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit, onCa
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {productCategories.map((category) => (
-                    <SelectItem key={category} value={category}>
-                      {category}
+                  {categories.map((cat) => (
+                    <SelectItem key={cat.id} value={String(cat.id)}>
+                      {cat.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -116,10 +116,24 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit, onCa
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={form.control}
-            name="price"
+            name="cost_price"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Price ($)</FormLabel>
+                <FormLabel>Cost Price ($)</FormLabel>
+                <FormControl>
+                  <Input type="number" step="0.01" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="selling_price"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Selling Price ($)</FormLabel>
                 <FormControl>
                   <Input type="number" step="0.01" {...field} />
                 </FormControl>

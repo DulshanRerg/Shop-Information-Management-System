@@ -1,4 +1,3 @@
-
 // Common types
 export interface BaseModel {
   id: number;
@@ -19,11 +18,14 @@ export interface User extends BaseModel {
 // Product/Inventory types
 export interface Product extends BaseModel {
   name: string;
-  category: string;
-  price: number;
-  stock: number;
+  category: string | { id: number; name: string };
+  cost_price: number;
+  selling_price: number;
+  quantity_in_stock: number;
   status: string;
   description: string;
+  image?: string;
+  created_by?: number;
 }
 
 // Customer types
